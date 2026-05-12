@@ -1,0 +1,7 @@
+groq
+python-dotenv
+uvicorn[standard]
+pydantic
+pandas
+openyxl
+python-multipart
