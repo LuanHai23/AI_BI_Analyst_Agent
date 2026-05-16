@@ -93,12 +93,14 @@ if st.session_state.dataset_id:
 else:
     st.sidebar.warning("No dataset uploaded yet")
 
-tab_profile, tab_ask, tab_sql, tab_chart = st.tabs(
+tab_profile, tab_ask, tab_sql, tab_chart, tab_logs, tab_evaluation = st.tabs(
     [
         "📌 Profile / EDA",
         "🤖 Ask AI",
         "🧠 SQL Query",
         "📈 Chart",
+        "📝 Logs",
+        "📊 Evaluation"
     ]
 )
 with tab_profile:
@@ -374,3 +376,48 @@ with tab_chart:
             # Hiển thị lỗi chi tiết từ backend
                 if e.response is not None:
                     st.error(e.response.text)
+
+# Tab 5: Logs
+with tab_logs:
+    st.header("📝 Agent Logs")
+
+    # Số lượng log muốn lấy
+    limit = st.number_input(
+        "Number of logs",
+        min_value = 1,
+        max_value = 500,
+        value = 50,
+    )
+        # Khi user bấm load logs
+    if st.button("Load logs"):
+        try:
+        # Gọi API lấy logs
+            response = requests.get(
+                f"{API_BASE_URL}/logs/agent",
+                params={"limit": limit},
+                timeout=60,
+            )
+
+            # Nếu backend trả lỗi thì raise exception
+            response.raise_for_status()
+
+            # Parse JSON response
+            data = response.json()
+
+            # Lấy list logs
+            logs = data["logs"]
+
+            # Nếu chưa có logs thì thông báo
+            if not logs:
+                st.info("No logs found")
+            else:
+                # Hiển thị logs dưới dạng bảng
+                logs_df = pd.DataFrame(logs)
+                st.dataframe(logs_df, use_container_width=True)
+        
+        except requests.exceptions.RequestException as e:
+            # Hiển thị lỗi chung từ requests
+            st.error(f"Failed to load logs: {e}")
+
+            if e.response is not None:
+                st.error(e.response.text)

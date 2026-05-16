@@ -1,0 +1,45 @@
+created_at,dataset_id,question,generated_sql,answer,row_count,latency_ms,status,error_message
+2026-05-16T17:58:42,debug-dataset,debug question,SELECT 1,debug answer,1,123.45,success,
+2026-05-16T18:02:21,0942d67e-26e4-4335-9062-b9b3a258585d,Số lượng khách hàng theo nhóm tuổi,"SELECT age_group, COUNT(customer_id) FROM dataset GROUP BY age_group LIMIT 20","Kết quả của truy vấn cho thấy số lượng khách hàng theo từng nhóm tuổi như sau:
+
+- Nhóm tuổi 18-24: 17.039 khách hàng
+- Nhóm tuổi 45-54: 23.172 khách hàng
+- Nhóm tuổi 25-34: 36.342 khách hàng
+- Nhóm tuổi 35-44: 31.920 khách hàng
+- Nhóm tuổi 55+: 13.457 khách hàng
+
+Nhóm tuổi 25-34 có số lượng khách hàng lớn nhất với 36.342 khách hàng, trong khi nhóm tuổi 55+ có số lượng khách hàng ít nhất với 13.457 khách hàng.",5,1310.33,success,
+2026-05-16T19:40:02,20d0a059-94e1-40ec-8720-3deba42c5bf7,Tổng số lượng sản phẩm đã bán là bao nhiêu?,"SELECT SUM(""quantity"") FROM dataset LIMIT 20",,,727.46,failed,"Binder Error: Referenced column ""quantity"" not found in FROM clause!
+Candidate bindings: ""acquisition_channel"", ""customer_id"", ""signup_date""
+
+LINE 1: SELECT SUM(""quantity"") FROM dataset LIMIT 20
+                   ^"
+2026-05-16T19:40:03,20d0a059-94e1-40ec-8720-3deba42c5bf7,Có bao nhiêu sản phẩm khác nhau trong dataset?,"SELECT COUNT(DISTINCT ""product_id"") FROM dataset",,,558.74,failed,"Binder Error: Referenced column ""product_id"" not found in FROM clause!
+Candidate bindings: ""customer_id"", ""acquisition_channel""
+
+LINE 1: SELECT COUNT(DISTINCT ""product_id"") FROM dataset
+                              ^"
+2026-05-16T19:40:03,20d0a059-94e1-40ec-8720-3deba42c5bf7,Top 10 sản phẩm có số lượng bán nhiều nhất là gì?,"SELECT product_id, SUM(quantity) AS total_quantity 
+FROM dataset 
+GROUP BY product_id 
+ORDER BY total_quantity DESC 
+LIMIT 10",,,561.53,failed,"Binder Error: Referenced column ""product_id"" not found in FROM clause!
+Candidate bindings: ""customer_id"", ""acquisition_channel""
+
+LINE 3: GROUP BY product_id 
+                 ^"
+2026-05-16T19:40:04,20d0a059-94e1-40ec-8720-3deba42c5bf7,Top 10 sản phẩm có doanh thu cao nhất là gì?,SELECT * FROM dataset ORDER BY unit_price * quantity DESC LIMIT 10,,,428.76,failed,"Binder Error: Referenced column ""unit_price"" not found in FROM clause!
+Candidate bindings: ""customer_id"", ""zip"", ""signup_date"", ""city"", ""acquisition_channel""
+
+LINE 1: SELECT * FROM dataset ORDER BY unit_price * quantity DESC LIMIT 10
+                                       ^"
+2026-05-16T19:40:04,20d0a059-94e1-40ec-8720-3deba42c5bf7,Tổng doanh thu thuần sau giảm giá là bao nhiêu?,"SELECT SUM(""quantity"" * ""unit_price"" - ""discount_amount"") AS net_revenue FROM dataset",,,541.61,failed,"Binder Error: Referenced column ""quantity"" not found in FROM clause!
+Candidate bindings: ""acquisition_channel"", ""customer_id"", ""signup_date""
+
+LINE 1: SELECT SUM(""quantity"" * ""unit_price"" - ""discount_amount"") AS net_revenue...
+                   ^"
+2026-05-16T19:40:05,20d0a059-94e1-40ec-8720-3deba42c5bf7,Mã khuyến mãi nào tạo ra doanh thu thuần cao nhất?,SELECT acquisition_channel FROM dataset ORDER BY quantity * unit_price - discount_amount DESC LIMIT 1,,,437.02,failed,"Binder Error: Referenced column ""quantity"" not found in FROM clause!
+Candidate bindings: ""acquisition_channel"", ""customer_id"", ""signup_date""
+
+LINE 1: SELECT acquisition_channel FROM dataset ORDER BY quantity * unit_price - discount_amount DESC LIMIT 1
+                                                         ^"

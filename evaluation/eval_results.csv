@@ -1,0 +1,7 @@
+﻿id,question,status,keyword_pass,latency_ms,generated_sql,row_count,answer,error_message
+1,Tổng số lượng sản phẩm đã bán là bao nhiêu?,error,False,733.03,,,,500 Server Error: Internal Server Error for url: http://127.0.0.1:8000/datasets/20d0a059-94e1-40ec-8720-3deba42c5bf7/ask
+2,Có bao nhiêu sản phẩm khác nhau trong dataset?,error,False,561.71,,,,500 Server Error: Internal Server Error for url: http://127.0.0.1:8000/datasets/20d0a059-94e1-40ec-8720-3deba42c5bf7/ask
+3,Top 10 sản phẩm có số lượng bán nhiều nhất là gì?,error,False,564.26,,,,500 Server Error: Internal Server Error for url: http://127.0.0.1:8000/datasets/20d0a059-94e1-40ec-8720-3deba42c5bf7/ask
+4,Top 10 sản phẩm có doanh thu cao nhất là gì?,error,False,431.82,,,,500 Server Error: Internal Server Error for url: http://127.0.0.1:8000/datasets/20d0a059-94e1-40ec-8720-3deba42c5bf7/ask
+5,Tổng doanh thu thuần sau giảm giá là bao nhiêu?,error,False,544.28,,,,500 Server Error: Internal Server Error for url: http://127.0.0.1:8000/datasets/20d0a059-94e1-40ec-8720-3deba42c5bf7/ask
+6,Mã khuyến mãi nào tạo ra doanh thu thuần cao nhất?,error,False,439.71,,,,500 Server Error: Internal Server Error for url: http://127.0.0.1:8000/datasets/20d0a059-94e1-40ec-8720-3deba42c5bf7/ask

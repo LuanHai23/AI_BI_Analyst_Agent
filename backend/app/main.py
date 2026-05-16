@@ -1,3 +1,5 @@
+import time
+
 from fastapi import FastAPI, HTTPException, UploadFile, File
 
 from llm.groq_client import LLMclient
@@ -14,6 +16,12 @@ from schemas.dataset_schema import (
 )
 from services.dataset_service import DatasetService
 from services.chart_service import ChartService
+from services.logging_service import LoggingService
+
+logging_service = LoggingService()
+llm_client = LLMclient()
+chart_service = ChartService()
+dataset_service = DatasetService()
 
 app = FastAPI(
     title = "AI Data Analyst Agent API",
@@ -21,10 +29,7 @@ app = FastAPI(
     version = "0.1.0",
 )
 
-llm_client = LLMclient()
-chart_service = ChartService()
 
-dataset_service = DatasetService()
 @app.get("/debug/dataset-service")
 def debug_dataset_service():
     return {
@@ -102,45 +107,45 @@ def query_dataset(dataset_id: str, request: DatasetQueryRequest):
     except Exception as e:
         raise HTTPException(status=500, detail=str(e))
 
-@app.post("/datasets/{dataset_id}/ask", response_model = DatasetAskResponse)
-def ask_dataset(dataset_id: str, request: DatasetAskRequest):
-    try:
-        # Lấy schema của dataset để đưa cho LLM biết có cột mô
-        dataset_schema = dataset_service.get_dataset_schema(dataset_id)
+# @app.post("/datasets/{dataset_id}/ask", response_model = DatasetAskResponse)
+# def ask_dataset(dataset_id: str, request: DatasetAskRequest):
+#     try:
+#         # Lấy schema của dataset để đưa cho LLM biết có cột mô
+#         dataset_schema = dataset_service.get_dataset_schema(dataset_id)
 
-        # Gửi schema  + question cho LLM để tạo SQL
-        generated_sql = llm_client.generate_sql(
-            question = request.question,
-            dataset_schema=dataset_schema
-        )
+#         # Gửi schema  + question cho LLM để tạo SQL
+#         generated_sql = llm_client.generate_sql(
+#             question = request.question,
+#             dataset_schema=dataset_schema
+#         )
 
-        # Chạy SQL do LLM sinh ra bằng DuckDB
-        query_results = dataset_service.query_dataset(
-            dataset_id= dataset_id,
-            sql = generated_sql,
-        )
+#         # Chạy SQL do LLM sinh ra bằng DuckDB
+#         query_results = dataset_service.query_dataset(
+#             dataset_id= dataset_id,
+#             sql = generated_sql,
+#         )
 
-        # Gọi LLM lần 2 đẻ diễn giải kết quả quểy thành results tự nhiên
-        answer = llm_client.explain_query_result(
-            question = request.question,
-            sql = generated_sql,
-            results = query_results["results"],
-        )
+#         # Gọi LLM lần 2 đẻ diễn giải kết quả quểy thành results tự nhiên
+#         answer = llm_client.explain_query_result(
+#             question = request.question,
+#             sql = generated_sql,
+#             results = query_results["results"],
+#         )
 
-        # Trả về câu hỏi, SQL, kết quả và answer
-        return DatasetAskResponse(
-            dataset_id=dataset_id,
-            question=request.question,
-            generated_sql=generated_sql,
-            row_count=query_results["row_count"],
-            results=query_results["results"],
-            answer= answer,
-        )
-    except FileNotFoundError as e:
-        raise HTTPException(status_code = 404, detail=str(e))
+#         # Trả về câu hỏi, SQL, kết quả và answer
+#         return DatasetAskResponse(
+#             dataset_id=dataset_id,
+#             question=request.question,
+#             generated_sql=generated_sql,
+#             row_count=query_results["row_count"],
+#             results=query_results["results"],
+#             answer= answer,
+#         )
+#     except FileNotFoundError as e:
+#         raise HTTPException(status_code = 404, detail=str(e))
     
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
     
 @app.post("/datasets/{dataset_id}/chart", response_model=DatasetChartResponse)
 def create_dataset_chart(dataset_id: str, request: DatasetChartRequest):
@@ -179,3 +184,147 @@ def create_dataset_chart(dataset_id: str, request: DatasetChartRequest):
     
     except Exception as e:
         raise HTTPException(status_code = 500, detail=str(e))
+    
+@app.post("/datasets/{dataset_id}/ask", response_model=DatasetAskResponse)
+def ask_dataset(dataset_id: str, request: DatasetAskRequest):
+    # Ghi lại thời điểm bắt đầu để tính latency
+    start_time = time.perf_counter()
+
+    # Khởi tạo biến để nếu lỗi vẫn có dữ liệu ghi log
+    generated_sql = None
+    answer = None
+    row_count = None
+
+    try:
+        # Lấy schema dataset để LLM biết tên cột và kiểu dữ liệu
+        dataset_schema = dataset_service.get_dataset_schema(dataset_id)
+
+        # Gửi schema + câu hỏi cho LLM để sinh SQL
+        generated_sql = llm_client.generate_sql(
+            question=request.question,
+            dataset_schema=dataset_schema,
+        )
+
+        # Chạy SQL do LLM sinh ra
+        query_result = dataset_service.query_dataset(
+            dataset_id=dataset_id,
+            sql=generated_sql,
+        )
+
+        # Lấy số dòng kết quả query
+        row_count = query_result["row_count"]
+
+        # Gọi LLM giải thích kết quả query
+        answer = llm_client.explain_query_result(
+            question=request.question,
+            sql=generated_sql,
+            results=query_result["results"],
+        )
+
+        # Tính latency theo milliseconds
+        latency_ms = (time.perf_counter() - start_time) * 1000
+
+        # Ghi log thành công
+        logging_service.log_agent_run(
+            dataset_id=dataset_id,
+            question=request.question,
+            generated_sql=generated_sql,
+            answer=answer,
+            row_count=row_count,
+            latency_ms=latency_ms,
+            status="success",
+            error_message=None,
+        )
+
+        # Trả response đúng schema DatasetAskResponse
+        return DatasetAskResponse(
+            dataset_id=dataset_id,
+            question=request.question,
+            generated_sql=generated_sql,
+            row_count=row_count,
+            results=query_result["results"],
+            answer=answer,
+        )
+
+    except FileNotFoundError as e:
+        # Tính latency kể cả khi lỗi
+        latency_ms = (time.perf_counter() - start_time) * 1000
+
+        # Ghi log lỗi
+        logging_service.log_agent_run(
+            dataset_id=dataset_id,
+            question=request.question,
+            generated_sql=generated_sql,
+            answer=answer,
+            row_count=row_count,
+            latency_ms=latency_ms,
+            status="failed",
+            error_message=str(e),
+        )
+
+        # Không tìm thấy dataset
+        raise HTTPException(status_code=404, detail=str(e))
+
+    except ValueError as e:
+        # Tính latency kể cả khi lỗi
+        latency_ms = (time.perf_counter() - start_time) * 1000
+
+        # Ghi log lỗi
+        logging_service.log_agent_run(
+            dataset_id=dataset_id,
+            question=request.question,
+            generated_sql=generated_sql,
+            answer=answer,
+            row_count=row_count,
+            latency_ms=latency_ms,
+            status="failed",
+            error_message=str(e),
+        )
+
+        # SQL do LLM sinh ra không hợp lệ hoặc bị chặn
+        raise HTTPException(status_code=400, detail=str(e))
+
+    except Exception as e:
+        # Tính latency kể cả khi lỗi
+        latency_ms = (time.perf_counter() - start_time) * 1000
+
+        # Ghi log lỗi
+        logging_service.log_agent_run(
+            dataset_id=dataset_id,
+            question=request.question,
+            generated_sql=generated_sql,
+            answer=answer,
+            row_count=row_count,
+            latency_ms=latency_ms,
+            status="failed",
+            error_message=str(e),
+        )
+
+        # Lỗi server khác
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/logs/agent")
+def get_agent_logs(limit: int = 100):
+    logs = logging_service.read_logs(limit=limit)
+
+    return {
+        "count": len(logs),
+        "logs": logs,
+    }
+
+@app.get("/debug/write-log")
+def debug_write_log():
+    logging_service.log_agent_run(
+        dataset_id="debug-dataset",
+        question="debug question",
+        generated_sql="SELECT 1",
+        answer="debug answer",
+        row_count=1,
+        latency_ms=123.45,
+        status="success",
+        error_message=None,
+    )
+
+    return {
+        "message": "Debug log written successfully"
+    }

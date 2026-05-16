@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "question": "Tổng số lượng sản phẩm đã bán là bao nhiêu?",
+    "expected_sql_keywords": ["SUM", "quantity"],
+    "description": "Agent should calculate total sold quantity."
+  },
+  {
+    "id": 2,
+    "question": "Có bao nhiêu sản phẩm khác nhau trong dataset?",
+    "expected_sql_keywords": ["COUNT", "DISTINCT", "product_id"],
+    "description": "Agent should count unique products."
+  },
+  {
+    "id": 3,
+    "question": "Top 10 sản phẩm có số lượng bán nhiều nhất là gì?",
+    "expected_sql_keywords": ["product_id", "SUM", "quantity", "GROUP BY", "ORDER BY", "LIMIT"],
+    "description": "Agent should rank products by total quantity."
+  },
+  {
+    "id": 4,
+    "question": "Top 10 sản phẩm có doanh thu cao nhất là gì?",
+    "expected_sql_keywords": ["product_id", "SUM", "quantity", "unit_price", "GROUP BY", "ORDER BY", "LIMIT"],
+    "description": "Agent should rank products by revenue."
+  },
+  {
+    "id": 5,
+    "question": "Tổng doanh thu thuần sau giảm giá là bao nhiêu?",
+    "expected_sql_keywords": ["SUM", "quantity", "unit_price", "discount_amount"],
+    "description": "Agent should calculate net revenue using quantity, unit_price, and discount_amount."
+  },
+  {
+    "id": 6,
+    "question": "Mã khuyến mãi nào tạo ra doanh thu thuần cao nhất?",
+    "expected_sql_keywords": ["promo_id", "SUM", "GROUP BY", "ORDER BY"],
+    "description": "Agent should aggregate net revenue by promo_id."
+  }
+]
