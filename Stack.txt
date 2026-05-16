@@ -1,0 +1,10 @@
+LLM:            Groq API - llama-3.3-70b-versatile
+Agent:          LangGraph
+Backend:        FastAPI
+Frontend:       Streamlit
+Data:           Pandas + DuckDB
+Chart:          Plotly
+Database:       SQLite trước và sau đó đến PostgreSQL
+Report:         Markdown + HTML
+Deploy:         Docker
+Eval:           customer eval script + logs
