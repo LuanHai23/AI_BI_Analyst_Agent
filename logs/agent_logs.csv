@@ -43,3 +43,11 @@ Candidate bindings: ""acquisition_channel"", ""customer_id"", ""signup_date""
 
 LINE 1: SELECT acquisition_channel FROM dataset ORDER BY quantity * unit_price - discount_amount DESC LIMIT 1
                                                          ^"
+2026-05-17T10:32:49,e7059fb1-c88e-481f-acd7-48751eb89733,Cho tui biết tổng số lượng sản phẩm của từng size?,"SELECT ""size"", COUNT(""product_id"") FROM dataset GROUP BY ""size""","Kết quả của truy vấn SQL cho thấy tổng số lượng sản phẩm của từng size như sau:
+
+- Size L: 603 sản phẩm
+- Size XL: 603 sản phẩm
+- Size M: 603 sản phẩm
+- Size S: 603 sản phẩm
+
+Tóm lại, mỗi size (L, XL, M, S) đều có 603 sản phẩm.",4,1293.74,success,
