@@ -160,7 +160,7 @@ evaluation/eval_results.csv
 ---
 
 ## 3. Tech Stack
-Bacnkend 
+__Backend__ 
 ```text
 FastAPI
 Pydantic
@@ -168,27 +168,27 @@ DuckDB
 Pandas
 Groq API / LLM API
 ```
-Frontend
+__Frontend__
 ```text
 Streamlit
 Plotly
 Requests
 Pandas
 ```
-AI / LLM
+__AI / LLM__
 ``` text
 Groq API
 Llama 3.3 79B Versatile
 Natural Language to SQL
 LLM-based result explanation
 ```
-Data Processing
+__Data Processing__
 ```text
 Pandas
 DuckDB
 OpenPyXL
 ```
-Evaluation and Logging
+__Evaluation and Logging__
 ```text
 CSV logging
 Custom evaluation script
@@ -197,6 +197,28 @@ SQL keyword validation
 ```
 ---
 ## 4. System Architecture
+```text
+User
+ ↓
+Streamlit UI
+ ↓
+FastAPI Backend
+ ↓
+AI Agent Logic
+ ├── Dataset Profiling Tool
+ ├── SQL Query Tool
+ ├── LLM SQL Generator
+ ├── LLM Result Explainer
+ ├── Chart Generation Tool
+ ├── Logging Service
+ └── Evaluation Script
+ ↓
+Storage
+ ├── Uploaded datasets
+ ├── Agent logs
+ └── Evaluation results
+```
+
 
 
 
