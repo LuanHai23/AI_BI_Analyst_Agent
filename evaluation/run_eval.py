@@ -89,7 +89,7 @@ def evaluate_question(dataset_id: str, test_case: dict) -> dict:
         # Tính latency nếu có lỗi
         latency_ms = (time.perf_counter() - start_time) * 1000
 
-        # Trả về kết quả lỗi
+        # Trả về kết quả error
         return {
             "id": test_case["id"],
             "question": question,
