@@ -366,7 +366,18 @@ Request body:
   "title": "Top 10 sản phẩm bán nhiều nhất"
 }
 ```
-
+Agent Logs
+```http
+GET /logs/agent
+```
+Return recent AI agent logs.
+---
+## 7. Setup Instructipons
+__Step 1: Clone the repository__
+``` Bash
+git clone https://github.com/your-username/ai-data-analyst-agent.git
+cd ai-data-analyst-agent
+```
 
 
 
