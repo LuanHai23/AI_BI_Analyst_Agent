@@ -7,7 +7,7 @@ import streamlit as st
 from dotenv import load_dotenv
 
 load_dotenv()
-
+# Lấy URL của FastAPI backend từ biến môi trường
 API_BASE_URL = os.getenv("API_BASE_URL")
 
 st.set_page_config(
