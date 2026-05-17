@@ -25,9 +25,12 @@ Example questions:
 
 ```text
 Tổng số lượng sản phẩm đã bán là bao nhiêu?
+```
 
 ```text
 Top 10 sản phẩm có doanh thu cao nhất là gì?
+```
 
 ```text
 Mã khuyến mãi nào tạo ra doanh thu thuần cao nhất?
+```
