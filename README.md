@@ -64,6 +64,7 @@ After upliad, the backend returns:
 ---
 
 Automated Data Profiling / EDA
+
 The system automatically generates dataset profilling information:
 - number of rows and columns
 - data types
