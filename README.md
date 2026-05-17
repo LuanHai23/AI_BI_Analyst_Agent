@@ -378,7 +378,225 @@ __Step 1: Clone the repository__
 git clone https://github.com/your-username/ai-data-analyst-agent.git
 cd ai-data-analyst-agent
 ```
-
-
-
-
+---
+__Step 2: Create virtual environment__
+Windows Powershell:
+```
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+If PowerShell blocsh activation:
+``` Powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+Them activate again:
+``` Powershell
+.venv\Scripts\Activate.ps1
+```
+---
+__Step 3: Install dependencies__
+``` Bash
+pip install -r requirements.txt
+```
+__Step 4: Create environment file__
+Create a __.env__ file in the project root:
+``` env
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=llama-3.3-70b-versatile
+```
+---
+__Step 5: Run FastAPI backend__
+Open terminal 1:
+```
+cd backend
+uvicorn app.main:app --reload
+```
+Backend will run at:
+```
+http://127.0.0.1:8000
+```
+Swagger API docs:
+http://127.0.0.1:8000/docs
+---
+__Step 6: Run Streamlit frontend__
+Open terminal 2 from the project root:
+```
+streamlit run frontend\streamlit_app.py
+```
+Frontend will run at:
+```
+http://localhost:8501
+```
+## 8. How to Use
+__1. Upload Dataset__
+Go to the Streamlit side bar and upload a CSV or Excel file.
+Example dataset columns:
+```
+order_id
+product_id
+quantity
+unit_price
+discount_amount
+promo_id
+promo_id_2
+```
+---
+__2. Generate Profile
+Open the __Profile / EDA tab and click:
+```
+Generate Profile
+```
+The app will show:
+- row count
+- column count
+- duplicate rows
+- missing values
+- data types
+- numeric summary
+- categorical summary
+---
+__3. Ask AI__
+Open the __Ask AI__ tab and ask questions like:
+```
+Tổng số lượng sản phẩm đã bán là bao nhiêu?
+```
+```
+Top 10 sản phẩm có doanh thu cao nhất là sản phẩm nào
+```
+The system will return:
+- natural language answer
+- generated SQL
+- query result table
+---
+__4. Run SQL Manually__
+Open the SQL Query tab and run:
+```
+SELECT product_id, SUM(quantity) AS total_quantity
+FROM dataset
+GROUP BY product_id
+ORDER BY total_quantity DESC
+LIMIT 10;
+```
+---
+__5. Generate Chart__
+Open the chart tab and use:
+```
+SELECT product_id, SUM(quantity) AS total_quantity
+FROM dataset
+GROUP BY product_id
+ORDER BY total_quantity DESC
+LIMIT 10;
+```
+Chart settings:
+```
+chart_type: bar
+x: product_id
+y: total_quantity
+title: Top 10 sản phẩm bán nhiều nhất
+```
+---
+__6. View Logs__
+Open the logs tab and click:
+```
+Load Logs
+```
+You can inspect:
+- user questions
+- generated SQL
+- latency
+- success or failure status
+- error messages
+---
+__7. Run Evaluation__
+Make sure the backend is running.
+Then run:
+```
+python evaluation\run_eval.py
+```
+Enter a valid dataset ID when prompted.
+Example:
+```
+Enter dataset_id: abc-123
+```
+The evaluation script will test predefined questions from:
+```
+evaluation/questions.json
+```
+Results will be saved to:
+```
+evaluation/eval_results.csv
+```
+Example evaluation summary:
+```
+Total tests: 6
+Success count: 6
+Success rate: 100.00%
+Keyword pass count: 5
+Keyword pass rate: 83.33%
+Average latency: 450.31 ms
+```
+---
+__8. Example Questions__
+```
+Tổng số lượng sản phẩm đã bán là bao nhiêu?
+```
+```
+Có bao nhiêu sản phẩm khác nhau trong dataset?
+```
+```
+Tổng doanh thu thuần sau giảm giá là bao nhiêu?
+```
+---
+__9. Important Design Decisions__
+Why DuckDB?
+DuckDB is used because it can query Pandas DataFrames and local CSV/Excel-based datasets efficiently using SQL. It is lightweight and suitable for local analytical workloads.
+---
+Why FastAPI?
+FastAPI provides a clean API layer for the AI agent, dataset processing, SQL execution, chart generation, and logging.
+---
+Why Streamlit?
+Streamlit is used to quickly build an interactive data application UI without spending too much time on frontend engineering.
+---
+Why Logging?
+Logging helps track agent behavior, debug generated SQL, measure latency, and inspect failure cases.
+---
+Why Evaluation?
+Evaluation helps measure whether the agent can answer predefined business questions reliably and whether the generated SQL follows expected logic.
+---
+__10. Limitations__
+Current limitations:
+- The agent depends on the quality of LLM- generated SQL.
+- Ambiguous questions may produce incorret SQL.
+- Uploaded files are stored locally.
+- The current logging system uses CSV instead of a database.
+- Evaluation currently uses keyword-based SQL validation.
+- The system does not yet include advanced SQL correction or multi-step reasoning.
+---
+__11. Future Improvements__
+Planned improvements:
+- Add SQL auto-retry when generated SQL fails.
+- Add query validation before execution.
+- Add automatic chart recommendation.
+- Add report export to HTML/PDF.
+- Store metadata, logs, and chat history in PostgreSQL.
+- Add Docker Compose for backend and frontend.
+- Add authentication.
+- Add support for multiple datasets.
+- Add advanced evaluation metrics.
+- Add LangGraph-based multi-step agent workflow.
+---
+__12. Skills Demonstrated__
+This project demonstrates:
+```
+LLM application development
+Natural Language to SQL
+AI agent tool calling
+FastAPI backend development
+Streamlit frontend development
+DuckDB analytical query execution
+Pandas data profiling
+Plotly visualization
+Logging and monitoring
+Evaluation pipeline design
+Production-oriented AI engineering mindset
+```
