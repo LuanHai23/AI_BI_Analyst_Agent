@@ -218,6 +218,154 @@ Storage
  ├── Agent logs
  └── Evaluation results
 ```
+---
+## 5. Project Structure
+```text
+ai-data-analyst-agent/
+│
+├── backend/
+│   └── app/
+│       ├── llm/
+│       │   ├── __init__.py
+│       │   └── groq_client.py
+│       │
+│       ├── schemas/
+│       │   ├── __init__.py
+│       │   ├── chat_schema.py
+│       │   └── dataset_schema.py
+│       │
+│       ├── services/
+│       │   ├── __init__.py
+│       │   ├── dataset_service.py
+│       │   ├── chart_service.py
+│       │   └── logging_service.py
+│       │
+│       ├── __init__.py
+│       └── main.py
+│
+├── frontend/
+│   └── streamlit_app.py
+│
+├── data/
+│   └── uploads/
+│
+├── logs/
+│   └── agent_logs.csv
+│
+├── evaluation/
+│   ├── questions.json
+│   ├── run_eval.py
+│   └── eval_results.csv
+│
+├── .env.example
+├── .gitignore
+├── requirements.txt
+└── README.md
+```
+---
+## 6. API Endpoints
+__Health Check__
+``` http
+GET /
+```
+Check if the backend API is running
+
+---
+__Chat with LLM__
+```http
+POST /chat
+```
+__Resquest body__:
+``` JSON
+{
+  "message": "Explain what an AI Data Analyst Agent does"
+}
+```
+---
+__Upload Dataset__
+``` http
+POST /datases/upload
+```
+Upload a CSV or Excel file
+Response example:
+```JSON
+ {
+  "dataset_id": "abc-123",
+  "filename": "order_items.csv",
+  "row_count": 714669,
+  "column_count": 7,
+  "columns": [
+    "order_id",
+    "product_id",
+    "quantity",
+    "unit_price",
+    "discount_amount",
+    "promo_id",
+    "promo_id_2"
+  ],
+  "dtypes": {
+    "order_id": "object",
+    "product_id": "object",
+    "quantity": "int64",
+    "unit_price": "float64"
+  },
+  "preview": []
+}
+```
+---
+__Dataset Profile__
+```http
+GET /datasets/{dataset_id}/profile
+```
+Returns automated EDA infomation
+---
+__SQL Query__
+```http
+POST /datasets/{dataset_id}/query
+```
+Request body:
+``` JSON
+{
+  "sql": "SELECT * FROM dataset LIMIT 10"
+}
+```
+---
+__Ask AI__
+```http
+POST /datasets/{dataset_id}/ask
+```
+Request body:
+```JSON
+{
+  "question": "Top 10 sản phẩm có số lượng bán nhiều nhất là gì?"
+}
+```
+Response example:
+```JSON
+{
+  "dataset_id": "abc-123",
+  "question": "Top 10 sản phẩm có số lượng bán nhiều nhất là gì?",
+  "generated_sql": "SELECT product_id, SUM(quantity) AS total_quantity FROM dataset GROUP BY product_id ORDER BY total_quantity DESC LIMIT 10",
+  "row_count": 10,
+  "results": [],
+  "answer": "..."
+}
+```
+---
+__Generate Chart__
+```http
+POST /datasets/{dataset_id}/chart
+```
+Request body:
+```JSON
+{
+  "sql": "SELECT product_id, SUM(quantity) AS total_quantity FROM dataset GROUP BY product_id ORDER BY total_quantity DESC LIMIT 10",
+  "chart_type": "bar",
+  "x": "product_id",
+  "y": "total_quantity",
+  "title": "Top 10 sản phẩm bán nhiều nhất"
+}
+```
 
 
 
