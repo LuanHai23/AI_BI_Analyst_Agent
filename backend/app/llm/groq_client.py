@@ -2,7 +2,7 @@ from groq import Groq
 from dotenv import load_dotenv
 import os
 load_dotenv()
-
+# Lớp client để tương tác với Groq API
 class LLMclient:
     def __init__(self):
         self.api_key = os.getenv("GROQ_API_KEY")
