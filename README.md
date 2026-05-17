@@ -606,23 +606,29 @@ __9. Important Design Decisions__
 Why DuckDB?
 
 DuckDB is used because it can query Pandas DataFrames and local CSV/Excel-based datasets efficiently using SQL. It is lightweight and suitable for local analytical workloads.
+
 ---
 Why FastAPI?
 
 FastAPI provides a clean API layer for the AI agent, dataset processing, SQL execution, chart generation, and logging.
+
 ---
 Why Streamlit?
 
 Streamlit is used to quickly build an interactive data application UI without spending too much time on frontend engineering.
+
 ---
 Why Logging?
 
 Logging helps track agent behavior, debug generated SQL, measure latency, and inspect failure cases.
+
 ---
 Why Evaluation?
 
 Evaluation helps measure whether the agent can answer predefined business questions reliably and whether the generated SQL follows expected logic.
+
 ---
+
 __10. Limitations__
 
 Current limitations:
