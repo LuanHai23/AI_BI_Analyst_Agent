@@ -40,6 +40,7 @@ Mã khuyến mãi nào tạo ra doanh thu thuần cao nhất?
 ## 2. Key Features
 
 Dataset Upload
+
 Upload CSV or Excel files through Streamlit UI or FastAPI endpoint.
 
 Supported formats:
@@ -77,6 +78,7 @@ The system automatically generates dataset profilling information:
 ---
 
 Natural Language to SQL
+
 Users can ask business questions in Vietnameses or English.
 
 The LLM receives:
@@ -84,8 +86,11 @@ The LLM receives:
 - user question
 - SQL generation rules
 Then it generates a valid DuckDB SQL query.
+
 Example:
+
 User question:
+
 ``` text
 Top 10 sản phẩm có số lượng bán nhiều nhất là gì?
 ```
@@ -101,13 +106,17 @@ LIMIT 10;
 ---
 
 SQL Query Execution
+
 The generated SQL is executed using DuckDB on the uploaded dataset.
+
 Users cal also manually write SQL queries through the UI.
 
 ---
 
 Chart Generation
+
 The system can generate charts from SQL query results using Plotly.
+
 Supported chart types:
 - bar
 - line
@@ -125,6 +134,7 @@ LIMIT 10;
 ---
 
 Agent Logging
+
 Each AI question is logged with:
 - dataset ID
 - user question
@@ -143,7 +153,9 @@ This helps debug the agent and analyze failure cases
 
 ---
 Evaluation Pipeline
+
 The project includes an evaluation script to test the agent using predefined business questions.
+
 The evaluation trachs:
 - SQL execution success
 - generated SQL keywords
