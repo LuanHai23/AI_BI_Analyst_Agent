@@ -7,4 +7,4 @@ Chart:          Plotly
 Database:       SQLite trước và sau đó đến PostgreSQL
 Report:         Markdown + HTML
 Deploy:         Docker
-Eval:           customer eval script + logs
+Eval:           customer eval script + log
